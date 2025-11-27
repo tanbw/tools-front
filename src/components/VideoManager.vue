@@ -77,9 +77,8 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col">
-                            <label class="form-label">剪辑模版ID：</label>
-                            <BFormSelect v-model="form.draftId" :options="draftList" value-field="id"
-                                text-field="name">
+                            <label class="form-label">剪辑模版：</label>
+                            <BFormSelect v-model="form.draftId" :options="draftList" value-field="id" text-field="name">
                                 <BFormSelectOption :value="null">无需自动剪辑</BFormSelectOption>
                             </BFormSelect>
                         </div>
@@ -93,7 +92,7 @@
                     </div>
                 </form>
             </div>
-            <div class="col-6">
+            <div class="col">
                 <div class="row" style=" overflow-y: auto;">
                     <VideoList @select-video="handleSelect" :key="listKey" />
                 </div>
@@ -121,6 +120,18 @@ const form = reactive<VideoItem>(new VideoItem());
 const listKey = ref(0);
 
 const save = async () => {
+    if (!form.title || !form.content) {
+        toast.warning('标题和内容不能为空');
+        return;
+    }
+    if (form.content.length > 2500) {
+        toast.warning('内容不能超过2500字');
+        return;
+    }
+    if (!form.promptPic || !form.promptWav) {
+        toast.warning('请选择视频参考图和视频参考语音');
+        return;
+    }
     const response = await apiCall<VideoItem>('/api/video/resave', {
         method: 'POST',
         data: form

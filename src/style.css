@@ -11241,3 +11241,20 @@ body {
   font-size: 0.75rem;
   border-radius: 0.375rem !important;
 }
+
+
+.truncate-cell {
+  width: 100%;
+  /* 确保 div 占满单元格宽度 */
+  max-width: 100%;
+  /* 防止内容溢出 */
+  overflow: hidden;
+  /* 隐藏超出部分 */
+  text-overflow: ellipsis;
+  /* 溢出部分显示省略号 */
+  white-space: nowrap;
+  /* 不换行 */
+  /* 可选：添加一些内边距或行高等，使其更美观 */
+  padding-right: 0.5em;
+  /* 与省略号之间留一点空间 */
+}

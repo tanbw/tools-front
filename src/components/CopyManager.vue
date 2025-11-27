@@ -99,7 +99,7 @@
           <!-- /资源选择部分 -->
           <div class="row mb-3">
             <div class="col">
-              <label class="form-label">剪辑模版ID：</label>
+              <label class="form-label">剪辑模版：</label>
                 <BFormSelect
                   v-model="form.draftId"
                   :options="draftList"
@@ -266,8 +266,12 @@ const saveCopyVideo = async () => {
     toast.warning('标题和内容不能为空');
     return;
   }
+  if(form.content.length>2500){
+    toast.warning('内容不能超过2500字');
+    return;
+  }
   if(!form.promptPic || !form.promptWav) {
-    toast.warning('请先选择视频参考图和视频参考语音');
+    toast.warning('请选择视频参考图和视频参考语音');
     return;
   }
   let response = await apiCall<CopyItem>('/api/copy', {
@@ -308,9 +312,6 @@ const activeTab = ref<'my' | 'public'>('my');
 const toTab = (tab: 'my' | 'public') => {
   if (activeTab.value !== tab) {
     activeTab.value = tab;
-    if (tab === 'my') {
-
-    }
   }
 };
 

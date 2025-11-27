@@ -13,13 +13,11 @@
         :striped="striped"
         :hover="hover"
         :small="small"
-        :sort-by="sortField"
-        :sort-desc="sortDesc"
+        :sort-by="sortByArray"
         @sort-changed="handleSortChanged"
         @row-clicked="handleRowClick"
         v-bind="tableProps"
       >
-      
         <template v-for="(_, slotName) in slots" v-slot:[slotName]="slotProps">
           <slot :name="slotName" v-bind="slotProps"></slot>
         </template>
@@ -54,16 +52,19 @@ import { useToast } from 'vue-toastification';
 import { apiCall } from '../utils/api';
 // 修正 import 语句
 import  {type Page, ListParams } from '../types';
-const slots = useSlots(); // 使用 useSlots
-
+import type {BTableSortBy, TableFieldRaw, TableItem} from 'bootstrap-vue-next'
 type EventHandler<T extends any[]> = (...args: T) => void;
+
+const slots = useSlots(); // 使用 useSlots
 
 const toast = useToast();
 
-const defaultPageChangeHandler = (page: number) => {};
-const defaultSortChangeHandler = (field: string, direction: 'asc' | 'desc') => {};
-const defaultRowClickHandler = (item: any, index: number, event: Event) => {};
-const defaultLoadingChangeHandler = (loading: boolean) => {};
+// ✅ 移除未使用的默认处理函数参数
+const defaultPageChangeHandler = (/* page: number */) => {};
+const defaultSortChangeHandler = (/* field: string, direction: 'asc' | 'desc' */) => {};
+const defaultRowClickHandler = (/* item: any, index: number, event: Event */) => {};
+const defaultLoadingChangeHandler = (/* loading: boolean */) => {};
+
 const defaultErrorHandler = (error: Error) => {
   console.error('PaginatedTable Default Error Handler:', error);
   toast.error(`加载数据失败: ${error.message || '未知错误'}`);
@@ -86,7 +87,8 @@ const props = withDefaults(defineProps<{
     last: string;
     ellipsis: string;
   };
-  paginationAlign?: 'fill' | 'center' | 'right';
+  // ✅ 修复：'right' -> 'end'
+  paginationAlign?: 'fill' | 'center' | 'end';
   paginationProps?: Record<string, any>;
   onPageChange?: EventHandler<[page: number]>;
   onSortChange?: EventHandler<[field: string, direction: 'asc' | 'desc']>;
@@ -107,6 +109,7 @@ const props = withDefaults(defineProps<{
     last: '末页',
     ellipsis: '...',
   }),
+  // ✅ 修复：'right' -> 'end'
   paginationAlign: 'center',
   paginationProps: () => ({}),
 });
@@ -138,8 +141,20 @@ const currentPage = computed({
   }
 });
 
-const sortField = computed(() => internalData.value?.sort?.sort?.[0]?.property);
-const sortDesc = computed(() => internalData.value?.sort?.sort?.[0]?.direction === 'DESC');
+const sortByArray = computed<BTableSortBy[]>(() => {
+  const sortInfo = internalData.value?.sort?.sort?.[0]; // 假设只处理第一个排序字段
+  if (sortInfo && sortInfo.property) {
+    return [{
+      key: sortInfo.property,
+      order: sortInfo.direction?.toLowerCase() as 'asc' | 'desc' || 'asc' // ✅ 使用 'order'，并提供默认值 'asc'
+    }];
+  }
+  return []; // 如果没有排序信息，返回空数组
+});
+
+// ✅ 移除原来的 sortField 和 sortDesc 计算属性
+// const sortField = computed(() => internalData.value?.sort?.sort?.[0]?.property);
+// const sortDesc = computed(() => internalData.value?.sort?.sort?.[0]?.direction === 'DESC');
 
 // 加载数据的函数
 const loadData = async () => {
@@ -155,9 +170,9 @@ const loadData = async () => {
     }
 
     const fullUrl = `${props.apiUrl}?${queryParams.toString()}`;
-    console.log('Full URL for loadData:', fullUrl); // 添加调试日志
+    console.log('Full URL for loadData:', fullUrl);
     const result = await apiCall<Page<any>>(fullUrl);
-    console.log('Data loaded from loadData:', result); // 添加调试日志
+    console.log('Data loaded from loadData:', result);
     internalData.value = result;
   } catch (err) {
     console.error('PaginatedTable Load Data Error:', err);
@@ -168,16 +183,12 @@ const loadData = async () => {
     resolvedLoadingChangeHandler(false);
   }
 };
+
 // 监听 props.initialParams 的变化，同步到内部 params
-// 这样当 CopyList 中的 params.author 改变并传递给 initialParams 时，
-// PaginatedTable 内部的 params 也会更新，从而触发 loadData
 watch(() => props.initialParams, (newInitialParams) => {
-  // 使用 Object.assign 或扩展运算符来更新内部 params 的属性
-  // 这样可以保留内部 params 的响应性
-  // 注意：这会用 newInitialParams 覆盖 params 的所有属性
-  // 如果只想更新部分属性（如 author），可以只更新特定字段
   Object.assign(params.value, newInitialParams);
-}, { deep: true }); // 对于 ListParams 这样的对象，deep watch 是必要的
+}, { deep: true });
+
 // 监听 params 变化
 watch(params, () => {
   loadData();
@@ -191,12 +202,14 @@ const handleRowClick = (item: any, index: number, event: Event) => {
   resolvedRowClickHandler(item, index, event);
 };
 
-const handlePageChange = (newPage: number) => {};
+const handlePageChange = (/* newPage: number */) => {
+  // 逻辑由 currentPage setter 处理
+};
 
 const handleSortChanged = (ctx: any) => {
   if (ctx.field && ctx.direction) {
     params.value.sort = `${ctx.field},${ctx.direction}`;
-    params.value.page = 0;
+    params.value.page = 0; // 排序变化时通常回到第一页
     resolvedSortChangeHandler(ctx.field, ctx.direction);
   }
 };

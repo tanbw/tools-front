@@ -45,7 +45,6 @@
         <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
           <div class="sb-sidenav-menu">
             <div class="nav">
-              <div class="sb-sidenav-menu-heading">主要功能</div>
               <router-link class="nav-link" :to="{ name: 'copy' }"
                            active-class="active" exact-active-class="active">
                 <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
@@ -68,7 +67,7 @@
     <div v-else-if="isCurrentUserError">加载失败</div>
     <!-- 访问重命名后的 data Ref -->
     <div v-else-if="currentUserData">
-      {{ currentUserData.username }}
+      {{ currentUserData.username }},余额<b>{{ (currentUserData.balance/1000/60).toFixed(2) }}</b>分钟
     </div>
     <div v-else>
       未知用户
