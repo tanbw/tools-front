@@ -34,7 +34,7 @@
                         <i v-if="uploading" class="fas fa-spinner fa-spin me-2"></i>
                         {{ uploading ? '保存中...' : '保存' }}
                     </b-button>
-                    <b-button type="button" :disabled="uploading" @click="createNew" class="btn btn-info me-2">
+                    <b-button type="button" :disabled="uploading" @click="createNew(activeTab)" class="btn btn-info me-2">
                         新建
                     </b-button>
                     </b-col>
@@ -111,9 +111,24 @@ const musics = computed(() => resources.value.filter(r => r.type === 'music'));
 const allowedFileTypes =  ref('image/*,audio/*');
 
 // --- Methods ---
-const createNew=()=>{
+const createNew=(newVal = activeTab.value)=>{console.log(newVal);
     const r=new ResourceItem();
     Object.assign(form,r);
+
+    if (newVal === 2) {
+        form.type = 'music';
+    } else if (newVal === 1) {
+        form.type = 'audio';
+    } else if (newVal === 0) {
+        form.type = 'image';
+    } else {
+    }
+
+    if (form.type === 'music' || form.type === 'audio') {
+        allowedFileTypes.value = 'audio/*';
+    } else if (form.type === 'image') {
+        allowedFileTypes.value = 'image/*';
+    }
 }
 const setDefault = async (item) => {
     try {
@@ -140,22 +155,7 @@ const loadResources = async () => {
 watch(
     () => activeTab.value,
     (newVal, oldVal) => {
-        createNew(); 
-
-        if (newVal === 2) {
-            form.type = 'music';
-        } else if (newVal === 1) {
-            form.type = 'audio';
-        } else if (newVal === 0) {
-            form.type = 'image';
-        } else {
-        }
-
-        if (form.type === 'music' || form.type === 'audio') {
-            allowedFileTypes.value = 'audio/*';
-        } else if (form.type === 'image') {
-            allowedFileTypes.value = 'image/*';
-        }
+        createNew(newVal); 
     }
 );
 const edit = async (item) => {

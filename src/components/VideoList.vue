@@ -7,7 +7,7 @@
         <div class="truncate-cell">{{ slotProps.item.title }}</div>
       </template>
       <template #cell(state)="slotProps">
-        {{ slotProps.item.state }} <i v-show="slotProps.item.state.includes('失败')" :id="`trigger-${slotProps.item.id}`"
+        {{ slotProps.item.state }} <i v-show="slotProps.item.state.includes('失败')||['视频生成成功'].includes(slotProps.item.state)" :id="`trigger-${slotProps.item.id}`"
           @click="showLog(slotProps.item.id)" class="fa-solid fa-circle-info"
           :ref="el => setTriggerRef(el, slotProps.item.id)">
         </i>
@@ -57,7 +57,7 @@
               </div>
             </div>
             <!-- 显示无数据或错误信息 -->
-            <div v-else-if="logData === null">
+            <div v-else-if="logData === null||logData.length==0">
               <p class="text-muted mb-0">暂无日志数据</p>
             </div>
             <div v-else>
@@ -85,9 +85,16 @@
             <i class="fas fa-download"></i>
           </a>
           <BTooltip :target="`download-video-btn-${slotProps.item.id}`" placement="top">
-            下载视频
+            下载剪辑后的视频
           </BTooltip>
-
+           <a v-if="['视频生成成功','原始视频生成成功'].includes(slotProps.item.state)" :id="`download-highvideo-btn-${slotProps.item.id}`"
+            :href="`/api/video/download/highvideo/${slotProps.item.id}`"
+            class="btn btn-sm btn-outline-primary p-1 text-decoration-none">
+            <i class="fas fa-download"></i>
+          </a>
+          <BTooltip :target="`download-highvideo-btn-${slotProps.item.id}`" placement="top">
+            下载剪辑前的视频
+          </BTooltip>
           <a v-if="['视频生成成功'].includes(slotProps.item.state)" :id="`download-draft-btn-${slotProps.item.id}`"
             :href="`/api/video/download/draft/${slotProps.item.id}`"
             class="btn btn-sm btn-outline-info p-1 text-decoration-none">
