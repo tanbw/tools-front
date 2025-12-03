@@ -152,15 +152,7 @@
               >
                 <i class="fas fa-play-circle me-1"></i> 播放
               </b-button>
-              <b-button 
-                variant="outline-secondary" 
-                size="sm"
-                class="flex-fill"
-                @click="$emit('setDefault', item)" 
-                v-show="item.user.promptWav !== item.id"
-              >
-                设为默认
-              </b-button>
+   
               <b-button 
                 variant="outline-danger" 
                 size="sm"

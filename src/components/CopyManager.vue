@@ -34,7 +34,7 @@
 
           <div class="row mb-3">
             <div class="col">
-              <label class="form-label">内容（建议不超过1000字）：</label>
+              <label class="form-label">内容（建议不超过2500字）：</label>
               <a href="#" class="text-decoration-none me-2" @click.prevent="restoreOriginal">还原初稿</a>
               <textarea v-model="form.content" class="form-control" style="height: 300px;"></textarea>
               <input type="hidden" v-model="form.oriContent" />
@@ -108,6 +108,7 @@
                 > <BFormSelectOption :value="null">无需自动剪辑</BFormSelectOption>
                 </BFormSelect>
             </div>
+         
           </div>
           <div class="row">
             <div class="col">
@@ -136,7 +137,8 @@
           <CopyList @select-copy="handleCopySelect" :key="copyListKey" />
         </div>
         <div class="row" style=" overflow-y: auto;" v-show="activeTab === 'public'">
-          <DownloadCopyList @select-copy="handleCopySelect" />
+          <div class="col">
+          <DownloadCopyList @select-copy="handleCopySelect" /></div>
         </div>
       </div>
     </div>
@@ -153,7 +155,7 @@
 import { onMounted, reactive, ref, watch } from 'vue';
 import CopyList from './CopyList.vue';
 import DownloadCopyList from './DownloadCopyList.vue';
-import { apiCall } from '../utils/api';
+import { apiCall,loadUser } from '../utils/api';
 import { useToast } from 'vue-toastification';
 import { CopyItem, VideoItem,DraftTemplate,type User,type ModalComponent} from '../types';
 // ✅ 1. 修改导入方式，不使用命名导入
@@ -349,22 +351,31 @@ const onSelectorHidden = () => {
 
 const loadDefaultUserResources = async () => {
   try {
-    const user = await apiCall<User>('/api/user/current');
+    const user = await loadUser();
     if (user.promptPic && !form.promptPic) {
       form.promptPic = user.promptPic;
     }
     if (user.promptWav && !form.promptWav) {
       form.promptWav = user.promptWav;
     }
+    if (user.draftId && !form.draftId) {
+      form.draftId = user.draftId;
+    }
   } catch (error) {
     console.error('加载用户默认资源失败:', error);
   }
 };
 onMounted(async() => {
-  loadDefaultUserResources();
-  getDraftList(); 
+  await getDraftList();
+  await loadDefaultUserResources();
+  
+  if (form.draftId == null && draftList.value.length == 1) {
+    const firstDraftId = draftList.value[0]?.id; // 使用可选链防止 draftList[0] 为 undefined
+    if (firstDraftId != null) { // 确保 ID 本身也不是 null 或 undefined
+      form.draftId = firstDraftId;
+    }
+  } 
 });
-
 </script>
 
 <style scoped>

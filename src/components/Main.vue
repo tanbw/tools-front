@@ -50,15 +50,21 @@
                 <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
                 文案库
               </router-link>
-               <router-link class="nav-link" :to="{ name: 'video' }"
-                           active-class="active" exact-active-class="active">
-                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                生成视频
-              </router-link>
+              
                <router-link class="nav-link" :to="{ name: 'resource' }"
                            active-class="active" exact-active-class="active">
                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                 资源库
+              </router-link>
+              <router-link class="nav-link" :to="{ name: 'draftTemplate' }"
+                           active-class="active" exact-active-class="active">
+                <div class="sb-nav-link-icon"><i class="fas fa-scissors"></i></div>
+                剪辑模版
+              </router-link>
+               <router-link class="nav-link" :to="{ name: 'video' }"
+                           active-class="active" exact-active-class="active">
+                <div class="sb-nav-link-icon"><i class="fas fa-video"></i></div>
+                生成视频
               </router-link>
             </div>
           </div>
@@ -67,7 +73,8 @@
     <div v-else-if="isCurrentUserError">加载失败</div>
     <!-- 访问重命名后的 data Ref -->
     <div v-else-if="currentUserData">
-      {{ currentUserData.username }},余额<b>{{ (currentUserData.balance/1000/60).toFixed(2) }}</b>分钟
+      {{ currentUserData.username }},余额<b>{{ currentUserData.balanceMin }}</b>分钟，
+      <b>{{ currentUserData.balanceTokenM }}</b>M Tokens
     </div>
     <div v-else>
       未知用户

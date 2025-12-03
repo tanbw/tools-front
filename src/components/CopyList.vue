@@ -96,7 +96,7 @@ const handleError = (err: Error) => {
 
 // 定义表格列 (不再包含 formatter)
 const tableFields = [
-  { key: 'title', label: '标题', sortable: true },
+  { key: 'title', label: '标题', sortable: true,thStyle: { width: '50%' } },
   { key: 'createTime', label: '创建时间', sortable: true ,formatter: (value: string) => formatDate(value)},
   { key: 'actions', label: '操作', sortable: false },
 ];

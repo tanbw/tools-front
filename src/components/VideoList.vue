@@ -69,7 +69,7 @@
       <template #cell(actions)="slotProps">
         <div class="d-flex gap-1">
           <!-- 删除按钮 -->
-          <a v-if="['就绪', '后处理失败', '语音生成失败', '原始视频生成失败', '视频生成成功'].includes(slotProps.item.state)"
+          <a v-if="['就绪', '后处理失败', '语音生成失败', '原始视频生成失败', '视频生成成功', '失败，余额不足'].includes(slotProps.item.state)"
             :id="`delete-btn-${slotProps.item.id}`" href="#"
             class="btn btn-sm btn-outline-danger p-1 text-decoration-none"
             @click.prevent="prepareToDelete(slotProps.item)">
@@ -121,7 +121,7 @@
     <p class="fw-bold text-muted mb-3">{{ itemToDelete?.title }}</p>
     <p class="text-warning-emphasis mb-0"><small>此操作不可撤销。</small></p>
   </ConfirmationModal>
-  <VideoModal :show="showModal" :video-url="videoUrl" />
+  <VideoModal :show="showModal" :video-url="videoUrl" @close="closeModal"/>
 </template>
 
 <script setup lang="ts">
@@ -140,6 +140,10 @@ const showVideoModal = (id: string) => {
   showModal.value = true;
   videoUrl.value = "/api/video/play/" + id;
 };
+const closeModal=()=>{
+  showModal.value=false;
+  videoUrl.value = '';
+}
 const toast = useToast();
 const paginatedTableRef = ref<InstanceType<typeof PaginatedTable> | null>(null);
 
@@ -220,9 +224,9 @@ const tableFields = [
     key: 'title', label: '标题', sortable: true,
     thStyle: { width: '30%' },
   },
-  { key: 'createTime', label: '创建时间', sortable: true, formatter: (value: string) => formatDate(value) },
+  { key: 'createTime', label: '创建时间', sortable: true, thStyle: { width: '13%' },formatter: (value: string) => formatDate(value) },
   { key: 'state', label: '状态', sortable: true },
-  { key: 'duration', label: '时长(分)', sortable: true, formatter: (value: number) => (value / 1000 / 60).toFixed(2) },
+  { key: 'durationMin', label: '时长(分)', sortable: true,thStyle: { width: '12%' },},
   { key: 'actions', label: '操作', sortable: false },
 ];
 

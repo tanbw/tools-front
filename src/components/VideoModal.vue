@@ -10,7 +10,7 @@
     @hidden="handleHidden"
   >
     <div class="ratio ratio-16x9">
-      <video v-if="videoUrl" :src="videoUrl" controls controlsList="nodownload" preload="metadata">
+      <video v-if="videoUrl" :src="videoUrl" ref="videoRef" controls controlsList="nodownload" preload="metadata">
         您的浏览器不支持 HTML5 视频标签。
       </video>
       <div v-else class="d-flex justify-content-center align-items-center h-100">
@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed,ref } from 'vue';
 
 // 定义 props
 interface Props {
@@ -31,7 +31,7 @@ interface Props {
   videoUrl: string;
 }
 const props = defineProps<Props>();
-
+const videoRef=ref<HTMLVideoElement | null>(null)
 // 定义 emits
 const emit = defineEmits<{
   'update:show': [show: boolean];
@@ -51,6 +51,11 @@ const showLocal = computed({
 
 // 处理模态框完全隐藏后的逻辑 (可选，如果需要清理)
 const handleHidden = () => {
+  const video = videoRef.value; 
+  if (video) { // 检查 videoRef.value 是否存在
+    video.pause(); // TypeScript 现在知道这是 HTMLVideoElement，有 pause 方法
+    video.src = ''; // TypeScript 现在知道这是 HTMLVideoElement，有 src 属性
+  }
 };
 </script>
 

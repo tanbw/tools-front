@@ -6,13 +6,18 @@ export interface User {
     authorities: string[]; // 后端还返回了 authorities 字段
     promptPic: number | null;
     promptWav: number | null;
-    balance: number;
+    draftId: number | null;
+    balanceMs: number;
+    balanceToken: number;
+    balanceMin: number;
+    balanceTokenM: number;
     // 如果后端还有其他字段，也可以在这里添加
 }
 export interface ModalComponent {
     open: () => void;
     // close?: () => void; // 如果有 close 方法也可以加上
 }
+
 export class TaskLog {
     id: number = 0;
     taskId: number | null = null;
@@ -28,8 +33,10 @@ export class TaskLog {
 }
 export class TaskLogItem {
     id: number | null = null;
-    content: string = '';
-    type: string = '';
+    refId: number | null = null;
+    module: string | null = null;
+    content: string | null = null;
+    type: string | null = null;
     createTime: Date | null = null;
     constructor(partial?: Partial<TaskLogItem>) {
         if (partial) {
@@ -127,10 +134,12 @@ export class ListParams {
     }
 }
 export class DraftTemplate {
-    id: number | null = null; // Spring Data 从 0 开始
+    id: number | null = null; 
     userId: number | null = null;
-    name: string | null = null; // 例如 'title,asc' 或 'content,desc'
+    musicId: number | null = null;
+    name: string | null = null;
     createTime: Date | null = null;
+    currentUserDraftId: number | null = null; 
     constructor(partial?: Partial<DraftTemplate>) {
         if (partial) {
             Object.assign(this, partial);

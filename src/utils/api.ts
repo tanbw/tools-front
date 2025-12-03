@@ -3,6 +3,7 @@ import axios, { type AxiosRequestConfig, type AxiosResponse, AxiosError, type In
 import { useToast } from 'vue-toastification';
 import { isProxy, toRaw } from 'vue';
 import router from '../router'
+import { type User } from '../types.ts'
 // 定义一个更灵活的 Options 类型
 interface ApiCallOptions extends AxiosRequestConfig {
   // 可以添加自定义选项
@@ -160,3 +161,10 @@ export function isInstanceOf<T>(obj: any, constructor: new (...args: any[]) => T
   }
   return obj instanceof constructor;
 }
+
+export async function loadUser() {
+
+  const user = await apiCall<User>('/api/user/current');
+  return user;
+
+};

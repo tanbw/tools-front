@@ -1,6 +1,5 @@
 <!-- src/components/CopyList.vue -->
 <template>
-  <div class="copy-list-container">
     <div class="row">
           <label class="form-label">筛选作者：</label>
           <select v-model="params.author"
@@ -9,6 +8,8 @@
              <option value="周小鹏">周小鹏</option>
           </select>
         </div>
+        <div class="row">
+          <div class="col">
     <PaginatedTable
       api-url="/api/copy/download/list"
       :initial-params="params"
@@ -16,8 +17,12 @@
       :page-size="params.size"
       @row-clicked="handleSelectCopy"
     >
-    </PaginatedTable>
-  </div>
+    
+     <template #cell(title)="slotProps">
+        <div class="truncate-cell">{{ slotProps.item.title }}</div>
+      </template>
+    </PaginatedTable></div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -45,7 +50,7 @@ const params = reactive<DownloadCopyListParams>(new DownloadCopyListParams());
 
 // 定义表格列
 const tableFields = [
-  { key: 'title', label: '标题', sortable: true },
+  { key: 'title', label: '标题', sortable: true ,thStyle: { width: '50%' }},
   { key: 'author', label: '作者', sortable: true }, 
   { key: 'createTime', label: '创建时间', sortable: true ,formatter: (value: string) => formatDate(value)},
 ];
@@ -57,5 +62,5 @@ const handleSelectCopy = (copy: DownloadCopyItem) => {
 </script>
 
 <style scoped>
-/* 你的样式 */
+
 </style>

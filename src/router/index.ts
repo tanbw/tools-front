@@ -8,7 +8,7 @@ import Logs from '../components/Logs.vue'
 import CopyManager from '../components/CopyManager.vue' 
 import VideoManager from '../components/VideoManager.vue' 
 import ResourceManager from '../components/ResourceManager.vue' 
-
+import DraftTemplateManager from '../components/DraftTemplateManager.vue' 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
@@ -43,6 +43,11 @@ const routes: Array<RouteRecordRaw> = [
         path: 'resource',
         name: 'resource',
         component: ResourceManager
+      },
+          {
+        path: 'draftTemplate',
+        name: 'draftTemplate',
+        component: DraftTemplateManager
       },
       {
         path: 'settings',

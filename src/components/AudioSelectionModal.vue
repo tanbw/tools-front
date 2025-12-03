@@ -91,7 +91,8 @@ import { apiCall } from '../utils/api';
 const props = defineProps({
   id: { type: String, default: 'audio-selection-modal' }, // 模态框 ID
   title: { type: String, default: '选择声音' }, // 模态框标题
-  initialResourceId: { type: Number, default: null } // 初始选中的资源 ID
+  initialResourceId: { type: Number, default: null }, // 初始选中的资源 ID
+  filterType: { type: String, default: 'audio' },
 });
 
 const emit = defineEmits(['selected', 'hidden']); // 定义传出事件
@@ -106,7 +107,7 @@ const selectedResourceId = ref(props.initialResourceId); // 使用 props 的初�
 const audioPlayerModal = ref({ show: false, src: '', title: '' });
 
 // --- Computed ---
-const audios = computed(() => resources.value.filter(r => r.type === 'audio'));
+const audios = computed(() => resources.value.filter(r => r.type === props.filterType));
 
 // --- Methods ---
 const openModal = async () => {

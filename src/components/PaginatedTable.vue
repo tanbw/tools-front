@@ -227,4 +227,8 @@ defineExpose({ refresh });
 .paginated-table-container {
   /* 你的样式 */
 }
+:deep(table) {
+  table-layout: fixed;
+  width: 100%;
+}
 </style>

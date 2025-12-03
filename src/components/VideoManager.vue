@@ -93,6 +93,9 @@
                 </form>
             </div>
             <div class="col">
+                <div class="row" >
+                    <BButton @click="autoRefresh">{{ isAutoRefresh==false?'自动刷新':'停止刷新' }}</BButton>
+                </div>
                 <div class="row" style=" overflow-y: auto;">
                     <VideoList @select-video="handleSelect" :key="listKey" />
                 </div>
@@ -108,7 +111,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref, watch } from 'vue';
+import { onMounted, reactive, ref, onUnmounted } from 'vue';
 import { apiCall } from '../utils/api';
 import { useToast } from 'vue-toastification';
 import { VideoItem, DraftTemplate, type ModalComponent } from '../types';
@@ -118,7 +121,27 @@ import VideoList from './VideoList.vue';
 const toast = useToast();
 const form = reactive<VideoItem>(new VideoItem());
 const listKey = ref(0);
+const isAutoRefresh = ref(false); // 控制自动刷新状态
+const refreshIntervalId = ref<number|null>(null); // 存储定时器 ID
+const autoRefresh=(e:MouseEvent)=>{
+ isAutoRefresh.value = !isAutoRefresh.value;
 
+  if (isAutoRefresh.value) {
+    const refreshIntervalMs = 20000;
+    refreshIntervalId.value = window.setInterval(() => {
+      console.log('Auto-refresh triggered by timer');
+      listKey.value++; // 执行数据获取
+    }, refreshIntervalMs);
+    console.log('Auto-refresh started');
+  } else {
+    // 关闭自动刷新
+    if (refreshIntervalId.value) {
+      clearInterval(refreshIntervalId.value);
+      refreshIntervalId.value = null; // 清空 ID
+      console.log('Auto-refresh stopped');
+    }
+  }
+};
 const save = async () => {
     if (!form.title || !form.content) {
         toast.warning('标题和内容不能为空');
@@ -193,6 +216,12 @@ const getDraftList = async () => {
 };
 onMounted(async () => {
     getDraftList();
+});
+onUnmounted(() => {
+  if (refreshIntervalId.value !== null) { // 检查是否为 null
+     clearInterval(refreshIntervalId.value);
+     console.log('Timer cleared on unmount');
+  }
 });
 </script>
 
