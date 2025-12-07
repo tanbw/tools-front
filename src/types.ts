@@ -18,27 +18,15 @@ export interface ModalComponent {
     // close?: () => void; // 如果有 close 方法也可以加上
 }
 
-export class TaskLog {
-    id: number = 0;
-    taskId: number | null = null;
-    userId: number | null = null;
-    createTime: Date | null = null;
-    content: string | null = null;
-    type: string | null = null;
-    constructor(partial?: Partial<TaskLog>) {
-        if (partial) {
-            Object.assign(this, partial);
-        }
-    }
-}
-export class TaskLogItem {
+
+export class OperationLogItem {
     id: number | null = null;
     refId: number | null = null;
     module: string | null = null;
     content: string | null = null;
     type: string | null = null;
     createTime: Date | null = null;
-    constructor(partial?: Partial<TaskLogItem>) {
+    constructor(partial?: Partial<OperationLogItem>) {
         if (partial) {
             Object.assign(this, partial);
         }
@@ -141,6 +129,20 @@ export class DraftTemplate {
     createTime: Date | null = null;
     currentUserDraftId: number | null = null; 
     constructor(partial?: Partial<DraftTemplate>) {
+        if (partial) {
+            Object.assign(this, partial);
+        }
+    }
+}
+export class UserOperationLog {
+    id: number | null = null; 
+    operationLogId: string | null = null;
+    balanceMs: number | null = null; // 初始化为 0，对应数据库默认值
+    balanceToken: number | null = null; // 初始化为 0，对应数据库默认值
+    balanceMsIncr: number | null = null; // 初始化为 0，对应数据库默认值
+    balanceTokenIncr: number | null = null; // 初始化为 0，对应数据库默认值
+    operationLog:OperationLogItem|null =null;
+    constructor(partial?: Partial<UserOperationLog>) {
         if (partial) {
             Object.assign(this, partial);
         }

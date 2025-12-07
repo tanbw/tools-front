@@ -25,11 +25,7 @@
                 设置
               </router-link>
             </li>
-            <li>
-              <router-link class="dropdown-item" :to="{ name: 'logs' }">
-                日志
-              </router-link>
-            </li>
+          
             <li><hr class="dropdown-divider" /></li>
             <li>
               <a class="dropdown-item" href="#" @click="handleLogout">注销</a>
@@ -65,6 +61,11 @@
                            active-class="active" exact-active-class="active">
                 <div class="sb-nav-link-icon"><i class="fas fa-video"></i></div>
                 生成视频
+              </router-link>
+              <router-link class="nav-link" :to="{ name: 'user_logs' }"
+                           active-class="active" exact-active-class="active">
+                <div class="sb-nav-link-icon"><i class="fas fa-list"></i></div>
+                我的日志
               </router-link>
             </div>
           </div>

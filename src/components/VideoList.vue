@@ -127,7 +127,7 @@
 <script setup lang="ts">
 import { reactive, ref, useTemplateRef } from 'vue';
 import PaginatedTable from './PaginatedTable.vue'; // 导入通用组件
-import { VideoItem, ListParams, TaskLog } from '../types'; // 导入 CopyItem 和 ListParams
+import { VideoItem, ListParams, OperationLogItem } from '../types'; // 导入 CopyItem 和 ListParams
 import { formatDate } from '../utils/api'; // 导入日期格式化函数
 import { apiCall } from '../utils/api';
 import { useToast } from 'vue-toastification';
@@ -171,7 +171,7 @@ const setTriggerRef = (el: Element | ComponentPublicInstance | null, id: string)
     triggerRefs.value.delete(id);
   }
 };
-const logData = ref<TaskLog[] | null>(null); // 存储日志数组
+const logData = ref<OperationLogItem[] | null>(null); // 存储日志数组
 const loadingLog = ref<boolean>(false); // 标记是否正在加载日志
 const currentLogId = ref<number | null>(null); // 记录当前正在查看日志的项的 ID
 const showAllLogs = ref<boolean>(false); // 控制是否显示所有日志
@@ -182,7 +182,7 @@ const showLog = async (id: number) => {
   showAllLogs.value = false; // 重置展开状态
 
   try {
-    const response = await apiCall<TaskLog[]>(`/api/video/${id}/logs`, {
+    const response = await apiCall<OperationLogItem[]>(`/api/video/${id}/logs`, {
       method: 'GET',
     });
     logData.value = response;

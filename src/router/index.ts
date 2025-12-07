@@ -4,7 +4,7 @@ import Login from '../components/Login.vue'
 import Main from '../components/Main.vue' // 主框架
 import Dashboard from '../components/Dashboard.vue'
 import Settings from '../components/Settings.vue'
-import Logs from '../components/Logs.vue'
+import UserLogs from '../components/UserLogs.vue'
 import CopyManager from '../components/CopyManager.vue' 
 import VideoManager from '../components/VideoManager.vue' 
 import ResourceManager from '../components/ResourceManager.vue' 
@@ -55,9 +55,9 @@ const routes: Array<RouteRecordRaw> = [
         component: Settings
       },
       {
-        path: 'logs',
-        name: 'logs',
-        component: Logs
+        path: 'user_logs',
+        name: 'user_logs',
+        component: UserLogs
       }
     ]
   }
